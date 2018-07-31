@@ -21,6 +21,9 @@ public:
     static const int32_t CURRENT_VERSION=1;
     int32_t nVersion;
     uint256 hashPrevBlock;
+	/*popchain ghost*/
+	uint256 nDifficulty;//the difficulty of this block
+	/*popchain ghost*/
     uint256 hashMerkleRoot;
     uint256 hashClaimTrie; 							   // for claim operation
     uint32_t nTime;
@@ -39,6 +42,9 @@ public:
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
         READWRITE(hashPrevBlock);
+		/*popchain ghost*/
+		READWRITE(nDifficulty);
+		/*popchain ghost*/
         READWRITE(hashMerkleRoot);
         READWRITE(hashClaimTrie);
         READWRITE(nTime);
@@ -50,6 +56,9 @@ public:
     {
         nVersion = CBlockHeader::CURRENT_VERSION;
         hashPrevBlock.SetNull();
+		/*popchain ghost*/
+		nDifficulty.SetNull();
+		/*popchain ghost*/
         hashMerkleRoot.SetNull();
         hashClaimTrie.SetNull();
         nTime = 0;
@@ -115,6 +124,9 @@ public:
         CBlockHeader block;
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
+		/*popchain ghost*/
+		block.nDifficulty = nDifficulty;
+		/*popchian ghost*/
         block.hashMerkleRoot = hashMerkleRoot;
 		block.hashClaimTrie   = hashClaimTrie;
         block.nTime          = nTime;

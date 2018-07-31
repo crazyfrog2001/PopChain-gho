@@ -10,7 +10,10 @@
 #include <malloc.h>
 #endif
 
-#define INPUT_LEN	140
+/*popchain ghost*/
+//140 to 172
+#define INPUT_LEN	172
+/*popchain ghost*/
 #define OUTPUT_LEN	32
 
 // Least common multiple

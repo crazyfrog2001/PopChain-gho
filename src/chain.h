@@ -135,6 +135,9 @@ public:
 
     //! block header
     int nVersion;
+	/*popchain ghost*/
+	uint256 nDifficulty;//the difficulty of this block header
+	/*popchain ghost*/
     uint256 hashMerkleRoot;
 	uint256 hashClaimTrie;
     unsigned int nTime;
@@ -160,6 +163,9 @@ public:
         nSequenceId = 0;
 
         nVersion       = 0;
+		/*popchain ghost*/
+		nDifficulty = uint256();
+		/*popchain ghost*/
         hashMerkleRoot = uint256();
 		hashClaimTrie   = uint256();
         nTime          = 0;
@@ -177,6 +183,9 @@ public:
         SetNull();
 
         nVersion       = block.nVersion;
+		/*popchain ghost*/
+		nDifficulty = block.nDifficulty;
+		/*popchain ghost*/
         hashMerkleRoot = block.hashMerkleRoot;
 		hashClaimTrie  = block.hashClaimTrie;
         nTime          = block.nTime;
@@ -208,6 +217,9 @@ public:
         block.nVersion       = nVersion;
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
+		/*popchain ghost*/
+		block.nDifficulty = nDifficulty;
+		/*popchain ghost*/
         block.hashMerkleRoot = hashMerkleRoot;
 		block.hashClaimTrie   = hashClaimTrie;
         block.nTime          = nTime;
@@ -244,11 +256,14 @@ public:
 
     std::string ToString() const
     {
-        return strprintf("CBlockIndex(pprev=%p, nHeight=%d, merkle=%s, claimtrie=%s, hashBlock=%s)",
+        /*popchain ghost*/
+        return strprintf("CBlockIndex(pprev=%p, nHeight=%d, nDifficulty=%s, merkle=%s, claimtrie=%s, hashBlock=%s)",
             pprev, nHeight,
+            nDifficulty.ToString(),
             hashMerkleRoot.ToString(),
             hashClaimTrie.ToString(),
             GetBlockHash().ToString());
+		/*popchain ghost*/
     }
 
     //! Check whether this block index entry is valid up to the passed validity level.
@@ -321,6 +336,9 @@ public:
         // block header
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
+		/*popchain ghost*/
+		READWRITE(nDifficulty);
+		/*popchain ghost*/
         READWRITE(hashMerkleRoot);
 		READWRITE(hashClaimTrie);
         READWRITE(nTime);
@@ -335,6 +353,9 @@ public:
         CBlockHeader block;
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
+		/*popchain ghost*/
+		block.nDifficulty = nDifficulty;
+		/*popchain ghost*/
         block.hashMerkleRoot  = hashMerkleRoot;
 		block.hashClaimTrie    = hashClaimTrie;
         block.nTime           = nTime;
