@@ -23,11 +23,14 @@ std::string CBlockHeader::ToString() const
 {
 	/*popchain ghost*/
     std::stringstream s;
-    s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, nDifficulty=%s, hashMerkleRoot=%s, hashClaimTrie=%s, nTime=%u, nBits=%08x, nNonce=%s)\n",
+    s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, hashUncles=%s, nCoinbase=%s, nDifficulty=%s, nNumber=%u, hashMerkleRoot=%s, hashClaimTrie=%s, nTime=%u, nBits=%08x, nNonce=%s)\n",
 		GetHash().ToString(),
         nVersion,
         hashPrevBlock.ToString(),
-        nDifficulty.ToString(),/*popchain ghost*/
+        hashUncles.ToString(),
+        nCoinbase.ToString(),/*need change by base58 ?*/
+        nDifficulty.ToString(),
+        nNumber,
         hashMerkleRoot.ToString(),
         hashClaimTrie.ToString(),
         nTime, nBits, nNonce.ToString());
@@ -39,11 +42,14 @@ std::string CBlock::ToString() const
 {
     std::stringstream s;
 	/*popchain ghost*/
-    s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, nDifficulty=%s, hashMerkleRoot=%s, hashClaimTrie=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
+    s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, hashUncles=%s, nCoinbase=%s, nDifficulty=%s, nNumber=%u, hashMerkleRoot=%s, hashClaimTrie=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
         GetHash().ToString(),
         nVersion,
         hashPrevBlock.ToString(),
+        hashUncles.ToString(),/*popchain ghost*/
+        nCoinbase.ToString(),/*popchain ghost*/
         nDifficulty.ToString(),/*popchain ghost*/
+        nNumber,/*popchain ghost*/
         hashMerkleRoot.ToString(),
         hashClaimTrie.ToString(),
         nTime, nBits, nNonce.ToString(),
@@ -53,5 +59,38 @@ std::string CBlock::ToString() const
     {
         s << "  " << vtx[i].ToString() << "\n";
     }
+
+	/*popchain ghost*/
+	
+	for (unsigned int i = 0; i < vuh.size(); i++)
+    {
+        s << "  " << vuh[i].ToString() << "\n";
+    }
+   
+	/*popchain ghost*/
+	
     return s.str();
 }
+
+/*popchain ghost*/
+
+uint256 BlockUncleRoot(const CBlock& block)
+{
+	uint256 hashUncles = uint256();
+    std::vector<uint256> uncles;
+    uncles.resize(block.vuh.size());
+    for (size_t s = 0; s < block.vuh.size(); s++) {
+        uncles[s] = block.vuh[s].GetHash();
+    }
+
+	if(uncles.size() == 1){
+		CHash256().Write(uncles[0].begin(), 32).Write(uncles[0].begin(), 32).Finalize(hashUncles.begin());
+	}
+	else if(uncles.size() == 2){
+		CHash256().Write(uncles[0].begin(), 32).Write(uncles[1].begin(), 32).Finalize(hashUncles.begin());
+	}
+	
+    return hashUncles;
+}
+
+/*popchain ghost*/

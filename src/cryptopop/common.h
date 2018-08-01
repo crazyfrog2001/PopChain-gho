@@ -11,8 +11,8 @@
 #endif
 
 /*popchain ghost*/
-//140 to 172
-#define INPUT_LEN	172
+//140 to 228
+#define INPUT_LEN	228
 /*popchain ghost*/
 #define OUTPUT_LEN	32
 

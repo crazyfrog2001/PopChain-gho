@@ -22,7 +22,10 @@ public:
     int32_t nVersion;
     uint256 hashPrevBlock;
 	/*popchain ghost*/
+	uint256 hashUncles;//the hash256 of uncles or uncle block header
+	uint160 nCoinbase;//the autor address of this block header
 	uint256 nDifficulty;//the difficulty of this block
+	uint32_t nNumber;//the height of this block header
 	/*popchain ghost*/
     uint256 hashMerkleRoot;
     uint256 hashClaimTrie; 							   // for claim operation
@@ -43,7 +46,10 @@ public:
         nVersion = this->nVersion;
         READWRITE(hashPrevBlock);
 		/*popchain ghost*/
+		READWRITE(hashUncles);
+		READWRITE(nCoinbase);
 		READWRITE(nDifficulty);
+		READWRITE(nNumber);
 		/*popchain ghost*/
         READWRITE(hashMerkleRoot);
         READWRITE(hashClaimTrie);
@@ -57,7 +63,10 @@ public:
         nVersion = CBlockHeader::CURRENT_VERSION;
         hashPrevBlock.SetNull();
 		/*popchain ghost*/
+		hashUncles.SetNull();
+		nCoinbase.SetNull();
 		nDifficulty.SetNull();
+		nNumber=0;
 		/*popchain ghost*/
         hashMerkleRoot.SetNull();
         hashClaimTrie.SetNull();
@@ -93,6 +102,10 @@ public:
     mutable CTxOut txoutFound; 			// Found  payment
     mutable bool fChecked;
 
+	/*popchain ghost*/
+	std::vector<CBlockHeader> vuh;//vector of uncles or uncle block header
+	/*popchain ghost*/
+
     CBlock()
     {
         SetNull();
@@ -110,12 +123,18 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(*(CBlockHeader*)this);
         READWRITE(vtx);
+		/*popchain ghost*/
+		READWRITE(vuh);
+		/*popchain ghost*/
     }
 
     void SetNull()
     {
         CBlockHeader::SetNull();
         vtx.clear();
+		/*popchain ghost*/
+		vuh.clear();
+		/*popchain ghost*/
         fChecked = false;
     }
 
@@ -125,7 +144,10 @@ public:
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
 		/*popchain ghost*/
+		block.hashUncles = hashUncles;
+		block.nCoinbase = nCoinbase;
 		block.nDifficulty = nDifficulty;
+		block.nNumber = nNumber;
 		/*popchian ghost*/
         block.hashMerkleRoot = hashMerkleRoot;
 		block.hashClaimTrie   = hashClaimTrie;
@@ -172,5 +194,10 @@ struct CBlockLocator
         return vHave.empty();
     }
 };
+
+/*popchain ghost*/
+uint256 BlockUncleRoot(const CBlock& block);
+
+/*popchain ghost*/
 
 #endif // BITCOIN_PRIMITIVES_BLOCK_H
