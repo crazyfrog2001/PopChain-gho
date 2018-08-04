@@ -491,6 +491,9 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 
     pblock->vtx[0] = txCoinbase;
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
+	/*popchain ghost*/
+	pblock->hashUncles = BlockUncleRoot(*pblock);
+	/*popchain ghost*/
 }
 
 static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainparams)

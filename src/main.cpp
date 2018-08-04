@@ -3902,6 +3902,15 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             return state.DoS(100, error("CheckBlock(): duplicate transaction"),
                              REJECT_INVALID, "bad-txns-duplicate", true);
     }
+	/*popchain ghost*/
+	if(true){
+		uint256 hashUncleRoot = BlockUncleRoot(block);
+		if(block.hashUncles != hashUncleRoot){
+			return state.DoS(100, error("CheckBlock(): hashUncles mismatch"),
+                             REJECT_INVALID, "bad-uncleshash", true);
+		}
+	}
+	/*popchain ghost*/
 
     // All potential-corruption validation must be done before we do any
     // transaction validation, as otherwise we may mark the header as invalid

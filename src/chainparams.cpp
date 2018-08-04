@@ -139,7 +139,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
 	genesis.nDifficulty.SetNull();
 	genesis.nNumber = 0;	
 	genesis.vuh.clear();
-	//genesis.hashUncles = BlockUncleRoot(genesis);
+	genesis.hashUncles = BlockUncleRoot(genesis);
 	/*popchain ghost*/
     genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
     genesis.hashClaimTrie = uint256S("0x1");
