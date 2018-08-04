@@ -4007,6 +4007,12 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     int nHeight = pindexPrev->nHeight + 1;
     LogPrintf("check block header height  %d  \n", nHeight);	
+	/*popchain ghost*/
+	// check nNumber against prev
+	if (block.nNumber != (pindexPrev->nNumber+ 1))
+	    return state.DoS(100, error("%s : incorrect nNumber at %d", __func__, nHeight),
+               REJECT_INVALID, "bad-nNumber");
+	/*popchain ghost*/
     // Check proof of work
     if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
 	    return state.DoS(100, error("%s : incorrect proof of work at %d", __func__, nHeight),
@@ -6153,6 +6159,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 Misbehaving(pfrom->GetId(), 20);
                 return error("non-continuous headers sequence");
             }
+			/*popchain ghost*/
+			if (pindexLast != NULL && header.nNumber != (pindexLast->nNumber + 1)) {
+                Misbehaving(pfrom->GetId(), 20);
+                return error("non-continuous headers number");
+            }
+			/*popchain ghost*/
             if (!AcceptBlockHeader(header, state, chainparams, &pindexLast)) {
                 int nDoS;
                 if (state.IsInvalid(nDoS)) {
